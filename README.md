@@ -1,101 +1,177 @@
 # Network Troubleshooting Toolkit
 
-A small Python + Streamlit application for basic network troubleshooting. It provides four focused checks:
+A Python-based network diagnostics application built with Streamlit. It helps users perform basic network connectivity checks and view diagnostic results through a simple web interface.
 
-1. **DNS lookup** — resolves a hostname to IPv4/IPv6 addresses.
-2. **Ping** — sends one ICMP echo request using the operating system's `ping` utility.
-3. **TCP port check** — attempts one TCP connection to a selected port.
-4. **HTTP check** — sends a lightweight HTTP `HEAD` request and reports the response code.
+**Live Demo:** https://network-troubleshooting-toolkit.streamlit.app/
 
-Live results are saved to a local SQLite database and shown in the diagnostic history table.
+**GitHub Repository:** https://github.com/sahilkashyap263/Network_Diagnotic_python_script
 
-## Important: local checks vs hosted demo
+---
 
-Network checks run from the machine hosting the Python process. Run this app locally to troubleshoot your own laptop/network. A cloud-hosted public demo can only test connectivity from the cloud server, not from each visitor's device.
+## Features
 
-For that reason, live checks are **disabled by default**. The app displays clearly labelled sample results in demo mode. Do not enable live probes on a public deployment unless you have added suitable access controls and abuse protections.
+- **DNS Lookup:** Resolves hostnames and retrieves IPv4 and IPv6 addresses.
+- **Ping Test:** Checks basic network reachability using the operating system's ping utility.
+- **TCP Port Check:** Tests whether a TCP connection can be established to a specified host and port.
+- **HTTP Check:** Sends an HTTP HEAD request and displays the response status.
+- **Diagnostic History:** Stores previous diagnostic results locally using SQLite.
+- **Streamlit Dashboard:** Provides a simple interface for running and viewing network checks.
+- **Demo Mode:** Allows users to explore the application without performing live network checks.
 
-## Requirements
+## Technology Stack
 
-- Python 3.10 or newer
-- `pip`
-- The operating system's `ping` utility for the Ping feature
+- Python 3.10+
+- Streamlit
+- Pandas
+- SQLite
+- Socket Programming
+- DNS Resolution
+- HTTP Requests
+- Unit Testing
 
-## Run locally
+## Project Structure
 
-### 1. Create and activate a virtual environment
+```text
+network-troubleshooting-toolkit/
+│
+├── app.py
+├── network_checks.py
+├── storage.py
+├── requirements.txt
+├── README.md
+├── LICENSE
+├── .gitignore
+│
+└── tests/
+    └── test_network_checks.py
+```
 
-**Windows PowerShell**
+## Installation and Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/sahilkashyap263/Network_Diagnotic_python_script.git
+```
+
+### 2. Open the project folder
+
+```bash
+cd Network_Diagnotic_python_script
+```
+
+### 3. Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+### 4. Activate the virtual environment
+
+**Windows PowerShell:**
 
 ```powershell
-py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-**macOS / Linux**
+### 5. Install dependencies
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-### 2. Install dependencies
+### 6. Run the application
 
 ```bash
-python -m pip install -r requirements.txt
+streamlit run app.py
 ```
 
-### 3. Enable live checks and start the app
+The application will open in your browser.
 
-**Windows PowerShell**
+## Running Tests
 
-```powershell
-$env:ENABLE_LIVE_CHECKS="1"
-python -m streamlit run app.py
-```
-
-**macOS / Linux**
-
-```bash
-ENABLE_LIVE_CHECKS=1 python -m streamlit run app.py
-```
-
-Open the local address printed in the terminal (usually `http://localhost:8501`).
-
-To run the sample-data demo instead, leave `ENABLE_LIVE_CHECKS` unset.
-
-## Run tests
+Run the following command from the project root directory:
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-## Deploy a safe public demo
+## Live Checks and Demo Mode
 
-1. Push this project to a GitHub repository.
-2. In Streamlit Community Cloud, create an app from that repository and select `app.py` as the entry point.
-3. Keep `ENABLE_LIVE_CHECKS` unset (or set it to `0`) so the deployed app remains in sample-data demo mode.
+The application supports a configuration option called `ENABLE_LIVE_CHECKS`.
 
-The public demo is for showing the interface and workflow. Use the local mode for actual diagnostics from your own network.
+- When enabled, the application can perform live network diagnostics from the machine running the application.
+- When disabled, the application uses demo behavior instead of performing live checks.
+
+For local testing, configure the environment variable in PowerShell:
+
+```powershell
+$env:ENABLE_LIVE_CHECKS="true"
+streamlit run app.py
+```
+
+For demo mode:
+
+```powershell
+$env:ENABLE_LIVE_CHECKS="false"
+streamlit run app.py
+```
+
+**Important:** On a cloud-hosted deployment, live checks run from the cloud server, not from the visitor's personal computer. Live checks should remain disabled by default on a public deployment.
+
+## Deployment
+
+This application can be deployed using Streamlit Community Cloud.
+
+General deployment steps:
+
+1. Push the project to GitHub.
+2. Sign in to Streamlit Community Cloud.
+3. Connect your GitHub repository.
+4. Select `app.py` as the application entry point.
+5. Deploy the application.
+
+Live demo: https://network-troubleshooting-toolkit.streamlit.app/
 
 ## Limitations
 
-- ICMP may be blocked by a firewall even when DNS, TCP or HTTP works.
-- A successful TCP check confirms that a connection was accepted; it does not prove that the application behind the port is functioning correctly.
-- The HTTP check uses `HEAD`; some websites do not support it or may return different results for automated requests.
-- DNS response timing includes local resolver/cache behavior.
-- This is a learning/portfolio project, not a replacement for enterprise monitoring or an incident-management platform.
+- Ping results depend on operating system support and network configuration.
+- Some networks block ICMP traffic.
+- Some web servers do not support HTTP HEAD requests.
+- A successful TCP connection does not guarantee that the application running on that port is healthy.
+- SQLite history is stored locally and may not persist across cloud application restarts.
 
-## Suggested resume description
+## Security and Responsible Use
 
-**Network Troubleshooting Toolkit | Python, Streamlit, Socket Programming, SQLite**
+This toolkit is designed for basic troubleshooting and educational purposes.
 
-- Developed a Python-based diagnostic dashboard to check DNS resolution, ICMP reachability, TCP port connectivity and HTTP endpoint responses.
-- Used Python sockets and subprocess calls to perform connectivity checks and summarize common failure conditions.
-- Added a Streamlit interface and SQLite-backed history to review previous diagnostic results.
+- Test only systems and networks you own or have permission to troubleshoot.
+- Avoid running checks against systems without authorization.
+- Public deployments should use demo mode by default.
+- The application is not intended to perform vulnerability scanning or security testing.
 
-Only include these bullets after you have run the app, tested the checks and can explain how each one works.
+## Resume Project Description
 
-## Interview explanation
+**Network Troubleshooting Toolkit | Python, Streamlit, SQLite**
 
-"I built this project to practise first-level network troubleshooting. I start with DNS to confirm name resolution, use ping as a basic reachability signal, test a specific TCP port to check whether a service accepts connections, and make an HTTP request to inspect the application response. I compare the results rather than relying on ping alone, because ICMP can be filtered. The app records live check results in SQLite so I can review what happened."
+- Developed a Python-based network diagnostics application with a Streamlit interface.
+- Implemented DNS lookup, ICMP ping, TCP port connectivity checks, and HTTP status checks.
+- Integrated SQLite to maintain local diagnostic history.
+- Used modular Python code and unit tests to improve maintainability and reliability.
+- Deployed the application using Streamlit Community Cloud.
+
+## Interview Explanation
+
+This project demonstrates my understanding of basic networking concepts and Python programming.
+
+I developed a troubleshooting toolkit that helps diagnose common connectivity problems. It performs DNS resolution, ping tests, TCP port connectivity checks, and HTTP response checks.
+
+I used Python socket programming for network connectivity, Streamlit for the user interface, and SQLite for storing diagnostic history. I also included unit tests to verify important functions.
+
+The project helped me understand how DNS, ICMP, TCP, and HTTP work together during network communication.
+
+---
+
+**Author:** Sahil Kashyap
+
+**GitHub:** https://github.com/sahilkashyap263
